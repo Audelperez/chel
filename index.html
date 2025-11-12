@@ -1,153 +1,163 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sopa de Letras - Análisis de Datos</title>
-  <style>
-    body { font-family: Arial; background: #fdfdfd; text-align: center; margin:0; }
-    h1 { font-size: 5vw; margin: 10px 0; }
-    .board {
-      display: grid;
-      grid-template-columns: repeat(14, 1fr);
-      gap: 4px;
-      max-width: 95vw;
-      margin: 0 auto;
-      touch-action: none;
-    }
-    .cell {
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-weight: bold;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 5vw;
-      height: 8vw;
-      user-select: none;
-    }
-    .selected { background: #ffeb3b; }
-    .found { background: #4caf50; color: white; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sopa de Letras - Análisis de Datos</title>
+<style>
+body { font-family: Arial; background: #fdfdfd; text-align: center; margin:0; }
+h1 { font-size: 5vw; margin: 10px 0; }
+.board {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 4px;
+  max-width: 95vw;
+  margin: 0 auto;
+  touch-action: none;
+}
+.cell {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5vw;
+  height: 8vw;
+  user-select: none;
+}
+.selected { background: #ffeb3b; }
+.found { background: #4caf50; color: white; }
+</style>
 </head>
 <body>
-  <h1>Sopa de Letras - Análisis de Datos</h1>
-  <div id="board" class="board"></div>
+<h1>Sopa de Letras - Análisis de Datos</h1>
+<div id="board" class="board"></div>
 
-  <script>
-    const letras = [
-      "A,N,A,L,I,S,I,S,D,A,T,O,S,L",
-      "G,H,C,U,A,N,T,I,T,A,T,I,V,A",
-      "R,C,L,A,S,I,F,I,C,A,R,A,O,S",
-      "U,A,J,E,R,A,R,Q,U,I,A,L,U,T",
-      "P,T,V,A,R,I,A,B,L,E,I,R,I,N",
-      "A,E,I,N,T,E,R,V,A,L,O,S,T,A",
-      "R,S,O,R,D,I,N,A,R,I,A,D,I,C",
-      "C,U,A,L,I,T,A,T,I,V,A,S,Q,N",
-      "O,N,O,M,I,N,A,L,P,A,T,R,O,N",
-      "N,I,C,O,N,T,I,N,U,A,E,A,Q,A"
-    ].map(l => l.split(','));
+<script>
+const letras = [
+"A,N,A,L,I,S,I,S,D,A,T,O,S,L",
+"G,H,C,U,A,N,T,I,T,A,T,I,V,A",
+"R,C,L,A,S,I,F,I,C,A,R,A,O,S",
+"U,A,J,E,R,A,R,Q,U,I,A,L,U,T",
+"P,T,V,A,R,I,A,B,L,E,I,R,I,N",
+"A,E,I,N,T,E,R,V,A,L,O,S,T,A",
+"R,S,O,R,D,I,N,A,R,I,A,D,I,C",
+"C,U,A,L,I,T,A,T,I,V,A,S,Q,N",
+"O,N,O,M,I,N,A,L,P,A,T,R,O,N",
+"N,I,C,O,N,T,I,N,U,A,E,A,Q,A"
+].map(l => l.split(','));
 
-    const palabras = [
-      "ANALISISDATOS","CUANTITATIVA","CLASIFICAR","VARIABLE",
-      "INTERVALOS","ORDINARIA","CUALITATIVAS","NOMINAL","CONTINUA"
-    ];
+const palabras = ["ANALISISDATOS","CUANTITATIVA","CLASIFICAR","VARIABLE","INTERVALOS","ORDINARIA","CUALITATIVAS","NOMINAL","CONTINUA"];
 
-    const board = document.getElementById('board');
-    const filas = letras.length;
-    const columnas = letras[0].length;
+const board = document.getElementById('board');
+const filas = letras.length;
+const columnas = letras[0].length;
 
-    // Crear cuadrícula
-    for (let i = 0; i < filas; i++) {
-      for (let j = 0; j < columnas; j++) {
-        const div = document.createElement('div');
-        div.classList.add('cell');
-        div.textContent = letras[i][j];
-        div.dataset.row = i;
-        div.dataset.col = j;
-        board.appendChild(div);
-      }
-    }
+// Crear cuadrícula
+for (let i=0;i<filas;i++){
+  for (let j=0;j<columnas;j++){
+    const div = document.createElement('div');
+    div.classList.add('cell');
+    div.textContent = letras[i][j];
+    div.dataset.row = i;
+    div.dataset.col = j;
+    board.appendChild(div);
+  }
+}
 
-    let seleccionadas = [];
-    let tocando = false;
+let seleccionadas = [];
+let tocando = false;
 
-    function toggleCelda(celda) {
-      if (celda.classList.contains('found')) return;
-      const id = `${celda.dataset.row},${celda.dataset.col}`;
-      if (!seleccionadas.includes(id)) {
-        seleccionadas.push(id);
-        celda.classList.add('selected');
-      }
-    }
+function toggleCelda(celda){
+  if(celda.classList.contains('found')) return;
+  const id = `${celda.dataset.row},${celda.dataset.col}`;
+  if(!seleccionadas.includes(id)){
+    seleccionadas.push(id);
+    celda.classList.add('selected');
+  }
+}
 
-    function verificarLinea() {
-      if (seleccionadas.length < 2) return "";
-      const coords = seleccionadas.map(id => id.split(',').map(Number));
-      const dr = coords[1][0] - coords[0][0];
-      const dc = coords[1][1] - coords[0][1];
+function verificarLinea(){
+  if(seleccionadas.length < 2) return "";
+  const coords = seleccionadas.map(id => id.split(',').map(Number));
+  const dr = coords[1][0]-coords[0][0];
+  const dc = coords[1][1]-coords[0][1];
+  for(let i=1;i<coords.length;i++){
+    const r = coords[0][0]+dr*i;
+    const c = coords[0][1]+dc*i;
+    if(!coords.find(([x,y])=>x===r && y===c)) return "";
+  }
+  return coords.map(([r,c])=>letras[r][c]).join('');
+}
 
-      for (let i = 1; i < coords.length; i++) {
-        const r = coords[0][0] + dr*i;
-        const c = coords[0][1] + dc*i;
-        if (!coords.find(([x,y]) => x===r && y===c)) return "";
-      }
-      return coords.map(([r,c]) => letras[r][c]).join('');
-    }
-
-    function verificarPalabra() {
-      const texto = verificarLinea();
-      const textoInv = texto.split('').reverse().join('');
-      const encontrada = palabras.find(p => p === texto || p === textoInv);
-      if (encontrada) {
-        seleccionadas.forEach(id => {
-          const [r,c] = id.split(',').map(Number);
-          const celda = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
-          celda.classList.remove('selected');
-          celda.classList.add('found');
-        });
-      } else {
-        seleccionadas.forEach(id => {
-          const [r,c] = id.split(',').map(Number);
-          const celda = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
-          celda.classList.remove('selected');
-        });
-      }
-      seleccionadas = [];
-    }
-
-    // Eventos táctiles
-    board.addEventListener('touchstart', e => {
-      const celda = e.target.closest('.cell');
-      if (!celda) return;
-      seleccionadas = [];
-      document.querySelectorAll('.selected').forEach(c => c.classList.remove('selected'));
-      tocando = true;
-      toggleCelda(celda);
+function verificarPalabra(){
+  const texto = verificarLinea();
+  const textoInv = texto.split('').reverse().join('');
+  const encontrada = palabras.find(p => p===texto || p===textoInv);
+  if(encontrada){
+    seleccionadas.forEach(id=>{
+      const [r,c] = id.split(',').map(Number);
+      const celda = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
+      celda.classList.remove('selected');
+      celda.classList.add('found');
     });
-
-    board.addEventListener('touchmove', e => {
-      if (!tocando) return;
-      const touch = e.touches[0];
-      const target = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (target && target.classList.contains('cell')) toggleCelda(target);
+  } else {
+    seleccionadas.forEach(id=>{
+      const [r,c] = id.split(',').map(Number);
+      const celda = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
+      celda.classList.remove('selected');
     });
+  }
+  seleccionadas=[];
+}
 
-    board.addEventListener('touchend', () => {
-      tocando = false;
-      verificarPalabra();
-    });
+// Eventos táctiles
+board.addEventListener('touchstart', e=>{
+  const celda = e.target.closest('.cell');
+  if(!celda) return;
+  seleccionadas=[];
+  document.querySelectorAll('.selected').forEach(c=>c.classList.remove('selected'));
+  tocando=true;
+  toggleCelda(celda);
+});
 
-    // Eventos click (para PC)
-    board.addEventListener('click', e => {
-      const celda = e.target.closest('.cell');
-      if (celda) {
-        seleccionadas.push(`${celda.dataset.row},${celda.dataset.col}`);
-        celda.classList.add('selected');
-        if (seleccionadas.length >= 2) verificarPalabra();
-      }
-    });
-  </script>
+board.addEventListener('touchmove', e=>{
+  if(!tocando) return;
+  const touch = e.touches[0];
+  const target = document.elementFromPoint(touch.clientX,touch.clientY);
+  if(target && target.classList.contains('cell')) toggleCelda(target);
+});
+
+board.addEventListener('touchend', ()=>{
+  tocando=false;
+  verificarPalabra();
+});
+
+// Eventos click (PC)
+board.addEventListener('mousedown', e=>{
+  const celda = e.target.closest('.cell');
+  if(celda){
+    seleccionadas=[];
+    document.querySelectorAll('.selected').forEach(c=>c.classList.remove('selected'));
+    tocando=true;
+    toggleCelda(celda);
+  }
+});
+
+board.addEventListener('mousemove', e=>{
+  if(!tocando) return;
+  const target = e.target.closest('.cell');
+  if(target) toggleCelda(target);
+});
+
+board.addEventListener('mouseup', ()=>{
+  if(tocando){
+    tocando=false;
+    verificarPalabra();
+  }
+});
+</script>
 </body>
 </html>
